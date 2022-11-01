@@ -4,37 +4,40 @@ import * as fs from "fs";
 /**
  * Add usernames here
  */
-const usernames = ["noahbuscher"];
+const USERNAMES = ["noahbuscher"];
 
 (async () => {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   const scrapeResults: any = {};
 
-  console.info(`Running for ${usernames.length} user(s)`);
-  for (const account of usernames) {
+  console.info(`Running for ${USERNAMES.length} user(s)`);
+
+  for (const account of USERNAMES) {
     console.info(`Retrieving data for @${account}...`);
 
     try {
       await page.goto(`https://instagram.com/${account}`);
 
-      await page.waitForXPath('//div[contains(text(), "followers")]');
-      const followersElem = await page.$x(
+      await page.waitForXPath("//div[contains(text(), 'followers')]");
+      const [followerCountElem] = await page.$x(
         '//div[contains(text(), "followers")]'
       );
 
-      await page.waitForXPath('//img[contains(@alt, "profile picture")]');
-      const pfpElem = await page.$x(`//img[contains(@alt, "profile picture")]`);
+      await page.waitForXPath("//img[contains(@alt, 'profile picture')]");
+      const [pfpElem] = await page.$x(
+        "//img[contains(@alt, 'profile picture')]"
+      );
 
       const followerCount = await page.evaluate(
         (el) => el.textContent.split(" ")[0].replace(",", ""),
-        followersElem[0]
+        followerCountElem
       );
 
       const pfp = await page.evaluate(
         // @ts-ignore
         (el) => el.getAttribute("src"),
-        pfpElem[0]
+        pfpElem
       );
 
       scrapeResults[account] = {
