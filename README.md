@@ -1,6 +1,6 @@
 # Instascrape
 
-Add usernames to the `usernames` const @ the top of `index.ts`.
+Add usernames to the `USERNAMES` const @ the top of `index.ts`.
 
 To run, just `npm install && npm start`.
 
